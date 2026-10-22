@@ -1,0 +1,18 @@
+{
+  "endpoint": "https://overpass-api.de/api/interpreter",
+  "method": "GET",
+  "user_agent": "HuanPathTerrainPrototype/1.0 local-model",
+  "license": "ODbL 1.0",
+  "attribution": "\u00a9 OpenStreetMap contributors",
+  "license_url": "https://www.openstreetmap.org/copyright",
+  "download_date": "2026-10-21",
+  "osm_base_timestamp": "2026-10-21T03:02:25Z",
+  "elements": 16,
+  "query_file": "osm_query.overpassql",
+  "sha256": "6dd8f4e5f3678389dc6f8ff7beca793e29639f3f00d05997f89b1c3aa96f45a6",
+  "previous_attempt_errors": [
+    "POST overpass-api.de TLS handshake / curl HTTP 406",
+    "kumi.systems default User-Agent HTTP 429; custom User-Agent timeout"
+  ],
+  "successful_attempt": "curl GET with meaningful User-Agent"
+}

@@ -1,0 +1,35 @@
+/* 仅桌面嵌入模式使用淡色外观；独立工作台与 3D 渲染保持原样。 */
+:root.huan-app { color-scheme: light; background: #f5f7f4; color: #263c30; --line: #dce5dd; --muted: #718176; --accent: #315d40; }
+.huan-app .sidebar { background: #edf2ec; }
+.huan-app .main-area, .huan-app .upload-view, .huan-app .progress-view { background: #f5f7f4; }
+.huan-app .workspace-toolbar { background: #f8faf7; height: 56px; padding-inline: 24px; }
+.huan-app .brand-mark, .huan-app .work-symbol { background: #e0eadf; color: #315d40; }
+.huan-app .brand-copy strong, .huan-app #workspace-title, .huan-app .work-name, .huan-app .task-title h2 { color: #263c30; }
+.huan-app .brand-copy small, .huan-app .library-heading, .huan-app .sidebar-bottom, .huan-app .breadcrumb, .huan-app .eyebrow,
+.huan-app .work-meta, .huan-app .work-facts, .huan-app .work-card:not(.active) .work-facts,
+.huan-app .library-empty, .huan-app .intro-description, .huan-app .file-format, .huan-app .upload-hint,
+.huan-app .privacy, .huan-app #progress-summary, .huan-app #stages small, .huan-app .stage-time { color: #718176; }
+.huan-app .work-card { color: #263c30; border-radius: 9px; }
+.huan-app .work-card:hover, .huan-app .work-card.active { background: #e0eadf; }
+.huan-app .work-card.active:before { background: #315d40; }
+.huan-app .count { background: #dfe9df; color: #315d40; }
+.huan-app .new-work, .huan-app .quiet-button { background: #fff; border: 1px solid #d5e1d7; color: #315d40; border-radius: 9px; }
+.huan-app .new-work:hover, .huan-app .quiet-button:hover, .huan-app .icon-button:hover { background: #e7efe7; }
+.huan-app .icon-button, .huan-app #clear-file { color: #718176; }
+.huan-app .toolbar-divider { background: #dce5dd; }
+.huan-app .drop-zone { background: #fff; border-color: #b5cbb9; border-radius: 9px; }
+.huan-app .drop-zone:hover, .huan-app .drop-zone.dragging { background: #eaf2e9; border-color: #315d40; }
+.huan-app .drop-zone strong, .huan-app .upload-icon, .huan-app .choose-file, .huan-app .selected-file { color: #315d40; }
+.huan-app .choose-file { border-color: #93ac98; }
+.huan-app .create-button { background: #315d40; color: #fff; border-color: #315d40; border-radius: 9px; }
+.huan-app .create-button:hover:not(:disabled) { background: #234f37; }
+.huan-app .ridge-back { fill: #e4ece0; stroke: #a5b59c; }
+.huan-app .ridge-front { fill: #d8e5d4; stroke: #758d6b; }
+.huan-app .trail { stroke: #a1764e; }
+.huan-app .intro-art circle { fill: #a1764e; stroke: #a1764e; }
+.huan-app #stages li { border-color: #dce5dd; }
+.huan-app #total, .huan-app .viewer-state, .huan-app .done .stage-icon { color: #315d40; }
+.huan-app .running .stage-icon, .huan-app .work-facts.warning { color: #9b6d28; }
+.huan-app .error, .huan-app .library-error, .huan-app .failed .stage-icon { color: #a94636; }
+.huan-app .notice { background: #fff8ee; border-color: #dbc5a2; color: #805727; }
+.huan-app button:focus-visible, .huan-app a:focus-visible, .huan-app summary:focus-visible, .huan-app label:focus-visible { outline-color: #315d40; }

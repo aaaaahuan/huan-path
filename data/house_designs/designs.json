@@ -1,0 +1,127 @@
+[
+ {
+  "key": "1_monopoly_house",
+  "name": "经典大富翁",
+  "desc": "大富翁绿房子：方盒子+人字顶+烟囱，白色门窗",
+  "colors": {
+   "body": "#2e9e4f",
+   "accent": "#f7f7f2"
+  },
+  "size_mm": [
+   3.7,
+   2.95,
+   3.95
+  ],
+  "zmin": 0.0,
+  "triangles": 126,
+  "watertight": true,
+  "winding_consistent": true,
+  "bodies": 1,
+  "manifold_genus": 0,
+  "volume_mm3": 26.76,
+  "faces_by_color": {
+   "body": 75,
+   "accent": 51
+  }
+ },
+ {
+  "key": "2_monopoly_hotel",
+  "name": "红色酒店",
+  "desc": "大富翁红酒店：长条楼身+人字顶，两排白窗",
+  "colors": {
+   "body": "#d6332b",
+   "accent": "#f7f7f2"
+  },
+  "size_mm": [
+   4.0,
+   2.55,
+   3.4
+  ],
+  "zmin": 0.0,
+  "triangles": 124,
+  "watertight": true,
+  "winding_consistent": true,
+  "bodies": 1,
+  "manifold_genus": 0,
+  "volume_mm3": 28.18,
+  "faces_by_color": {
+   "body": 64,
+   "accent": 60
+  }
+ },
+ {
+  "key": "3_mushroom_cottage",
+  "name": "蘑菇小屋",
+  "desc": "圆筒小屋配超大红色尖顶，童话感最强",
+  "colors": {
+   "body": "#f2e2bf",
+   "accent": "#e2463b"
+  },
+  "size_mm": [
+   3.7,
+   3.7,
+   4.0
+  ],
+  "zmin": 0.0,
+  "triangles": 274,
+  "watertight": true,
+  "winding_consistent": true,
+  "bodies": 1,
+  "manifold_genus": 0,
+  "volume_mm3": 19.14,
+  "faces_by_color": {
+   "body": 54,
+   "accent": 220
+  }
+ },
+ {
+  "key": "4_tibetan_house",
+  "name": "藏式民居",
+  "desc": "收分白墙+红色边玛檐口与梯形窗，屋顶一座小白塔",
+  "colors": {
+   "body": "#f5f2ea",
+   "accent": "#8a2a22"
+  },
+  "size_mm": [
+   3.49,
+   3.17,
+   4.45
+  ],
+  "zmin": 0.0,
+  "triangles": 368,
+  "watertight": true,
+  "winding_consistent": true,
+  "bodies": 1,
+  "manifold_genus": 0,
+  "volume_mm3": 25.07,
+  "faces_by_color": {
+   "body": 188,
+   "accent": 180
+  }
+ },
+ {
+  "key": "5_pin_house",
+  "name": "地图图钉屋",
+  "desc": "红色地图图钉托着一栋白墙红顶小房子，最像“标注点”",
+  "colors": {
+   "body": "#f7f7f2",
+   "accent": "#e2463b"
+  },
+  "size_mm": [
+   3.4,
+   3.4,
+   3.95
+  ],
+  "zmin": 0.0,
+  "triangles": 200,
+  "watertight": true,
+  "winding_consistent": true,
+  "bodies": 1,
+  "manifold_genus": 0,
+  "volume_mm3": 15.05,
+  "faces_by_color": {
+   "body": 12,
+   "accent": 188
+  }
+ }
+]

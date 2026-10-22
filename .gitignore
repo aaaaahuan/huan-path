@@ -1,0 +1,57 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local / OS / IDE
+.DS_Store
+.AppleDouble
+.LSOverride
+*.swp
+*~
+.idea/
+.vscode/
+*.code-workspace
+
+# Secrets / env
+.env
+.env.*
+!.env.example
+*.pem
+credentials.json
+secrets/
+
+# Runtime & large artifacts (do not ship)
+jobs/
+work/
+cache/
+models/
+*.tif
+*.tiff
+*.stl
+*.3mf
+
+# Sample / generated web preview blobs (keep source JS/HTML/CSS/vendor)
+web/photos/
+web/layers/
+web/*.bin
+web/preview*.png
+web/metadata.json
+
+# Large / regenerable data (keep small configs & house designs)
+data/**/*.tif
+data/**/*.tiff
+data/photos-*/
+data/osm_features_raw.json
+data/route.kmz
+data/terrain_crop.tif

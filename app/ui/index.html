@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN"><head><link rel="icon" href="data:,"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101a1d"><title>徒步记忆 · 作品空间</title><link rel="stylesheet" href="/app/style.css"><link rel="stylesheet" href="/app/huan-app.css"></head>
+<body>
+<script>if(new URLSearchParams(location.search).get('huanApp')==='1')document.documentElement.classList.add('huan-app');</script>
+<div class="workspace" id="workspace">
+ <aside class="sidebar" id="sidebar" aria-label="作品导航">
+  <a class="brand" href="/" aria-label="徒步记忆首页"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 24 13 8l5 8 3-5 8 13H4Z"/><path d="m10 14 3 3 3-3"/></svg></span><span class="brand-copy"><strong>徒步记忆</strong><small>TRAIL MEMORIES</small></span></a>
+  <button class="new-work sidebar-new" id="sidebar-new"><span class="plus">＋</span><span class="nav-label">新建作品</span><kbd class="nav-label">↑</kbd></button>
+  <div class="library-heading"><span class="nav-label">我的作品</span><span id="work-count" class="count">0</span></div>
+  <nav id="history" class="work-list" aria-label="我的作品"></nav>
+  <p id="library-error" class="library-error" role="status"></p>
+  <div class="sidebar-bottom"><span class="local-dot"></span><span class="nav-label">本地作品空间</span><span class="nav-label local-tag">LOCAL</span></div>
+ </aside>
+ <main class="main-area">
+  <header class="workspace-toolbar">
+   <div class="toolbar-leading"><button class="icon-button" id="sidebar-toggle" aria-controls="sidebar" aria-expanded="true" aria-label="收起作品列表" title="收起作品列表"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16m6-11-3 3 3 3"/></svg></button><span class="toolbar-divider"></span><span class="breadcrumb">作品空间</span><span id="work-separator" hidden>/</span><h1 id="workspace-title">创建新作品</h1></div>
+   <div class="toolbar-actions"><span id="viewer-state" class="viewer-state" role="status" hidden></span><button id="reload-viewer" class="quiet-button" hidden>重载预览</button><button id="new-work" class="new-work toolbar-new" hidden><span>＋</span> 新建作品</button></div>
+  </header>
+  <div class="main-content">
+   <section id="upload-view" class="upload-view" aria-label="创建作品">
+    <div class="upload-inner"><div class="intro-art" aria-hidden="true"><svg viewBox="0 0 200 110"><path class="ridge-back" d="m8 82 40-43 31 20 32-44 69 67"/><path class="ridge-front" d="m16 82 52-61 30 38 18-21 68 44Z"/><path class="trail" d="m101 79-14-12 8-10-16-13 1-10"/><circle cx="80" cy="34" r="3"/></svg></div>
+     <div class="eyebrow">A LITTLE PIECE OF YOUR JOURNEY</div><h2>把走过的山路，<br>留在手中。</h2><p class="intro-description">一份轨迹，一座属于你的山。<br>上传两步路记录，制作可预览、可打印的立体纪念。</p>
+     <form id="upload"><label id="drop" class="drop-zone" for="file" tabindex="0"><span class="upload-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m-4 4 4-4 4 4M5 15v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4"/></svg></span><strong>拖入轨迹文件，或<span class="choose-file">选择文件</span></strong><span class="file-format">KML / KMZ · 最大 150 MB</span><input type="file" id="file" accept=".kml,.kmz" aria-label="选择 KML 或 KMZ 轨迹"></label><div class="selected-file" id="selected" hidden><span id="selected-name"></span><button type="button" id="clear-file" aria-label="移除所选文件">×</button></div><label class="upload-hint">附加道路文件（可选，最大 50 MB）<input id="road-file" type="file" accept=".osm,.xml,.json,.geojson"></label><button type="submit" id="create" class="create-button" disabled>生成我的地形模型 <span aria-hidden="true">↗</span></button><p class="upload-hint">KMZ 中的照片会自动关联到轨迹位置</p><details class="privacy"><summary>数据如何处理？</summary><p>模型在本机生成，公开地形服务会收到区域范围。配置视觉 API 时，照片会发送到对应服务并可能产生费用；未配置时采用 OSM 附近建筑推断。</p></details></form>
+    </div>
+   </section>
+   <section id="progress-view" class="progress-view" hidden aria-label="生成进度"><div class="progress-inner"><span class="eyebrow">SHAPING YOUR JOURNEY</span><div class="task-title"><h2 id="task-name">正在生成作品</h2><span id="total"></span></div><p id="progress-summary">每一步完成后，都会为你保留结果。</p><ol id="stages"></ol><p id="error" class="error" role="alert"></p><div class="progress-actions"><button id="retry" class="new-work" hidden>重试任务</button><button id="view" class="create-button" hidden>查看 3D 模型 ↗</button></div></div></section>
+   <section id="viewer-view" class="viewer-view" hidden aria-label="作品三维展示"><iframe id="model-frame" title="3D 地形模型" allow="fullscreen" allowfullscreen></iframe><div id="viewer-loading" class="viewer-loading" hidden><span class="spinner"></span><span>正在载入山川与路线…</span></div></section>
+  </div>
+ </main>
+</div>
+<div id="notice" class="notice" role="alert" hidden></div>
+<script type="module" src="/app/upload.js"></script>
+</body></html>

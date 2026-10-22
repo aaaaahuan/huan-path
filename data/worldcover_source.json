@@ -1,0 +1,12 @@
+{
+  "dataset": "ESA WorldCover 10 m 2021 v200",
+  "tile": "N27E096",
+  "url": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N27E096_Map.tif",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "documentation": "https://esa-worldcover.org/en/data-access",
+  "doi": "https://doi.org/10.5281/zenodo.7254221",
+  "download_date": "2026-10-21",
+  "sha256": "fad67c5665b16eb8eb9a580ed56c226c87b215d97f829f44f4511279981a8ff4",
+  "attribution": "\u00a9 ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium"
+}

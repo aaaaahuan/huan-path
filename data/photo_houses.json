@@ -1,0 +1,259 @@
+{
+  "version": 1,
+  "method": "逐张通过看图能力查看原始附件；人工可编辑初始判断，不是建筑物测绘",
+  "placement": "使用拍摄者坐标，不推测房屋偏移；重复拍摄同一建筑不做去重",
+  "points": [
+    {
+      "photo_index": 1,
+      "file_id": "1550080395",
+      "longitude": 98.863097,
+      "latitude": 28.365658,
+      "has_house": "uncertain",
+      "reason": "左侧远处台地有成片白色疑似村舍或棚屋，但过远，无法可靠确认建筑细节。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550080395.png"
+    },
+    {
+      "photo_index": 2,
+      "file_id": "1550080400",
+      "longitude": 98.864892,
+      "latitude": 28.35322,
+      "has_house": false,
+      "reason": "仅见峡谷、山坡、溪流及道路，未见房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550080400.png"
+    },
+    {
+      "photo_index": 3,
+      "file_id": "1550080408",
+      "longitude": 98.864905,
+      "latitude": 28.353225,
+      "has_house": false,
+      "reason": "仅见峡谷、山坡和溪流，未见房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550080408.png"
+    },
+    {
+      "photo_index": 4,
+      "file_id": "1550080416",
+      "longitude": 98.856505,
+      "latitude": 28.354138,
+      "has_house": false,
+      "reason": "溪流与步道、行人、标牌，未见房屋；标牌不计建筑。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550080416.png"
+    },
+    {
+      "photo_index": 5,
+      "file_id": "1550080423",
+      "longitude": 98.856408,
+      "latitude": 28.354242,
+      "has_house": false,
+      "reason": "山间步道、挡石笼、管线及行人，未见房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550080423.png"
+    },
+    {
+      "photo_index": 6,
+      "file_id": "1550080534",
+      "longitude": 98.854813,
+      "latitude": 28.354603,
+      "has_house": false,
+      "reason": "经幡和步行桥清晰可见，未见房屋；桥不计房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550080534.png"
+    },
+    {
+      "photo_index": 7,
+      "file_id": "1550080543",
+      "longitude": 98.851455,
+      "latitude": 28.353797,
+      "has_house": true,
+      "reason": "左侧坡地可清楚看到金属屋顶、墙面及廊柱的小屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550080543.png"
+    },
+    {
+      "photo_index": 8,
+      "file_id": "1550081965",
+      "longitude": 98.848862,
+      "latitude": 28.354437,
+      "has_house": false,
+      "reason": "远眺峡谷及桥梁，未见房屋；桥不计房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550081965.png"
+    },
+    {
+      "photo_index": 9,
+      "file_id": "1550082075",
+      "longitude": 98.848733,
+      "latitude": 28.35485,
+      "has_house": false,
+      "reason": "树木、峡谷及远处桥梁，未见房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082075.png"
+    },
+    {
+      "photo_index": 10,
+      "file_id": "1550082086",
+      "longitude": 98.84845,
+      "latitude": 28.355183,
+      "has_house": false,
+      "reason": "峡谷、溪流和远处桥梁，未见房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082086.png"
+    },
+    {
+      "photo_index": 11,
+      "file_id": "1550082096",
+      "longitude": 98.848367,
+      "latitude": 28.355528,
+      "has_house": false,
+      "reason": "峡谷、经幡及桥梁，未见房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082096.png"
+    },
+    {
+      "photo_index": 12,
+      "file_id": "1550082100",
+      "longitude": 98.848205,
+      "latitude": 28.355658,
+      "has_house": true,
+      "reason": "画面左侧近处有白色墙体、金属屋顶和门口，属于明确建筑。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082100.png"
+    },
+    {
+      "photo_index": 13,
+      "file_id": "1550082108",
+      "longitude": 98.845787,
+      "latitude": 28.357125,
+      "has_house": false,
+      "reason": "牛和灌木近景，未见建筑。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082108.png"
+    },
+    {
+      "photo_index": 14,
+      "file_id": "1550082179",
+      "longitude": 98.845787,
+      "latitude": 28.357125,
+      "has_house": false,
+      "reason": "牛、石块和灌木，未见建筑。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082179.png"
+    },
+    {
+      "photo_index": 15,
+      "file_id": "1550082184",
+      "longitude": 98.845787,
+      "latitude": 28.35713,
+      "has_house": false,
+      "reason": "牛头与灌木特写，未见建筑。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082184.png"
+    },
+    {
+      "photo_index": 16,
+      "file_id": "1550082189",
+      "longitude": 98.843763,
+      "latitude": 28.360308,
+      "has_house": false,
+      "reason": "林中步道、树木和行人，未见房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082189.png"
+    },
+    {
+      "photo_index": 17,
+      "file_id": "1550082194",
+      "longitude": 98.843758,
+      "latitude": 28.360303,
+      "has_house": false,
+      "reason": "林中步道、树木和行人，未见房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082194.png"
+    },
+    {
+      "photo_index": 18,
+      "file_id": "1550082201",
+      "longitude": 98.820342,
+      "latitude": 28.36693,
+      "has_house": "uncertain",
+      "reason": "谷底远处有疑似小棚屋的矩形轮廓，受距离和树木影响，无法确认。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082201.png"
+    },
+    {
+      "photo_index": 19,
+      "file_id": "1550082277",
+      "longitude": 98.820367,
+      "latitude": 28.36698,
+      "has_house": "uncertain",
+      "reason": "右下谷底可见与上一照片相似的疑似棚屋轮廓，距离远且局部遮挡，无法确认。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082277.png"
+    },
+    {
+      "photo_index": 20,
+      "file_id": "1550082287",
+      "longitude": 98.807503,
+      "latitude": 28.38472,
+      "has_house": true,
+      "reason": "对面坡地可辨认多层白色建筑、窗格及屋顶。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082287.png"
+    },
+    {
+      "photo_index": 21,
+      "file_id": "1550082296",
+      "longitude": 98.801353,
+      "latitude": 28.389287,
+      "has_house": false,
+      "reason": "太阳能板与监控杆、树木、雪山，未见房屋；设备不计房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082296.png"
+    },
+    {
+      "photo_index": 22,
+      "file_id": "1550082384",
+      "longitude": 98.800475,
+      "latitude": 28.390392,
+      "has_house": false,
+      "reason": "手表特写及模糊步道，未见建筑。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082384.png"
+    },
+    {
+      "photo_index": 23,
+      "file_id": "1550082419",
+      "longitude": 98.79428,
+      "latitude": 28.389938,
+      "has_house": true,
+      "reason": "近处在建楼房框架及对面村舍的墙面、窗户和屋顶均清晰可见。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082419.png"
+    },
+    {
+      "photo_index": 24,
+      "file_id": "1550082432",
+      "longitude": 98.793312,
+      "latitude": 28.389667,
+      "has_house": false,
+      "reason": "雪山与树林，未见房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082432.png"
+    },
+    {
+      "photo_index": 25,
+      "file_id": "1550082469",
+      "longitude": 98.79287,
+      "latitude": 28.389725,
+      "has_house": true,
+      "reason": "近处白塔、木楼与在建房屋，以及远处村舍清晰可见。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082469.png"
+    },
+    {
+      "photo_index": 26,
+      "file_id": "1550082483",
+      "longitude": 98.792512,
+      "latitude": 28.390772,
+      "has_house": false,
+      "reason": "雪山、树林、草地、覆盖布和围栏，未见可辨认房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082483.png"
+    },
+    {
+      "photo_index": 27,
+      "file_id": "1550082499",
+      "longitude": 98.792678,
+      "latitude": 28.390508,
+      "has_house": false,
+      "reason": "雪山、树林、草地、覆盖布和围栏，未见可辨认房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082499.png"
+    },
+    {
+      "photo_index": 28,
+      "file_id": "1550082508",
+      "longitude": 98.792747,
+      "latitude": 28.390403,
+      "has_house": false,
+      "reason": "雪山、树林、草地、覆盖布和围栏，未见可辨认房屋。",
+      "reviewed_original": "data/photos-2026-01-27/originals/pic_1550082508.png"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "rivers": {
+    "enabled": true,
+    "depth_mm": 0.45,
+    "river_width_mm": 1.4,
+    "stream_width_mm": 1.1
+  },
+  "forest": {
+    "enabled": true,
+    "raise_mm": 0.32,
+    "texture_mm": 0.12
+  },
+  "grass": {
+    "enabled": true
+  },
+  "snow": {
+    "enabled": true
+  },
+  "houses": {
+    "enabled": true,
+    "include_uncertain": false,
+    "list_file": "data/photo_houses.json",
+    "route_gap_mm": 4.0,
+    "model_stl": "data/house_designs/5_pin_house.stl",
+    "model_glb": "data/house_designs/5_pin_house.glb",
+    "sink_mm": 0.4,
+    "scale": 1.0,
+    "min_route_clearance_mm": 0.0,
+    "pin_color": "#F4A7B9"
+  },
+  "photos": {
+    "enabled": true
+  },
+  "elevation_scale": {
+    "enabled": true,
+    "side": "south",
+    "intervals": 3,
+    "depth_mm": 0.35,
+    "line_width_mm": 0.6,
+    "tick_length_mm": 7.0,
+    "text_height_mm": 4.5,
+    "stroke_mm": 0.6,
+    "color": "#39434B",
+    "source": "route_start_end"
+  },
+  "network": {
+    "proxy": null
+  }
+}
