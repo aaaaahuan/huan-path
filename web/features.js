@@ -1,4 +1,5 @@
 import {loadPinHouse} from './pin-houses.js';
+import {initPlaceLabels} from './places.js';
 // Reconstruct the same heightfield/material order used by feature_engine.compose.
 export function composePreview({base,classes,forest,water,houses,distance,routeGap},state){
  const n=base.length,z=new Float32Array(n),preClass=new Uint8Array(n);
@@ -14,11 +15,15 @@ export function composePreview({base,classes,forest,water,houses,distance,routeG
  }
  return {z,preClass};
 }
-export async function initFeatureControls({THREE,geo,mesh,scene,meta,onChange=()=>{}}){
+export async function initFeatureControls({THREE,geo,mesh,scene,meta,renderer=null,onChange=()=>{}}){
  const spec=meta.preview_layers;if(!spec)throw Error('请先用新版配置重新构建模型');
  const read=async(url,Type)=>{if(!url)return null;const r=await fetch(url);if(!r.ok)throw Error(`图层加载失败 ${url}`);return new Type(await r.arrayBuffer())};
  const [base,classes,distance,forest,water,houses,faceRoute,routeGap,faceGap]=await Promise.all([read(spec.base,Float32Array),read(spec.classes,Uint8Array),read(spec.distance,Float32Array),read(spec.forest,Float32Array),read(spec.rivers,Float32Array),read(spec.houses,Float32Array),read(spec.face_route,Uint8Array),read(spec.route_gap,Uint8Array),read(spec.face_gap,Uint8Array)]);
  const layers={base,classes,distance,forest,water,houses,routeGap},state={...spec.available};
+ // Preview-only OSM settlement overlay on the same grid cells as classes.bin.
+ const settlementCells=spec.available.settlements?await read(spec.settlements,Uint8Array):null;
+ const settlementStyles=meta.settlements?.areas?.styles||{};
+ const settlementColors=Object.fromEntries(Object.entries(settlementStyles).map(([code,s])=>[code,new THREE.Color(s.color)]));
  const [nx,ny]=spec.grid,positions=geo.getAttribute('position').array,indices=geo.index.array;
  const samples=new Uint32Array(spec.top_faces);
  for(let i=0;i<samples.length;i++){
@@ -26,6 +31,7 @@ export async function initFeatureControls({THREE,geo,mesh,scene,meta,onChange=()
   const x=(positions[a]+positions[b]+positions[c])/3,y=(positions[a+1]+positions[b+1]+positions[c+1])/3;
   samples[i]=Math.min(ny-1,Math.max(0,Math.round(y/meta.size[1]*(ny-1))))*nx+Math.min(nx-1,Math.max(0,Math.round(x/meta.size[0]*(nx-1))));
  }
+ let placeLabels=null;
  const pinGroup=new THREE.Group();scene.add(pinGroup);
  if(state.houses){const template=await loadPinHouse(THREE,meta.houses.model_glb);template.traverse(o=>{if(o.isMesh&&o.material.name==='accent')o.material.color.set(meta.configuration.effective.houses.pin_color)});for(const point of meta.houses.placed_points){const pin=template.clone(true);pin.scale.setScalar(meta.houses.scale);pin.position.fromArray(point.scene_origin_mm);pin.userData.photoIndex=point.photo_index;pinGroup.add(pin)}}
 
@@ -69,13 +75,14 @@ export async function initFeatureControls({THREE,geo,mesh,scene,meta,onChange=()
   }
  }
  const colors=meta.palette.map(x=>new THREE.Color(x.hex));
- const names={roads:`道路 (${meta.roads?.count||0})`,rivers:'河流/湖泊',forest:'林区',grass:'草地',snow:'冰雪',houses:`房屋 (${meta.houses?.placed_points?.length||0})`,elevation_scale:'海拔刻度'};
+ const names={places:`地名 (${meta.settlements?.places?.count||0})`,settlements:'居民区',roads:`道路 (${meta.roads?.count||0})`,rivers:'河流/湖泊',forest:'林区',grass:'草地',snow:'冰雪',houses:`房屋 (${meta.houses?.placed_points?.length||0})`,elevation_scale:'海拔刻度'};
  const keysById={1:'rivers',2:'forest',3:'snow',5:'grass',6:'houses',7:'houses',8:'elevation_scale'};
  function legend(){
   const box=document.querySelector('#legend');box.replaceChildren();
   for(const item of meta.palette){if(item.id!==0&&item.id!==4&&!state[keysById[item.id]])continue;
    const span=document.createElement('span');span.className='legend-item';const dot=document.createElement('span');dot.className='swatch';dot.style.background=item.hex;span.append(dot,document.createTextNode(item.name.split(' / ')[1]));box.append(span)}
   if(state.roads)for(const style of Object.values(meta.roads.groups)){const span=document.createElement('span');span.className='legend-item';const dot=document.createElement('span');dot.className='swatch';dot.style.background=style.color;span.append(dot,document.createTextNode(style.label));box.append(span)}
+  if(state.settlements)for(const [code,style] of Object.entries(settlementStyles)){if(!meta.settlements.areas.cells?.[style.key])continue;const span=document.createElement('span');span.className='legend-item';const dot=document.createElement('span');dot.className='swatch';dot.style.background=style.color;span.append(dot,document.createTextNode(style.label));box.append(span)}
   if(state.photos){const span=document.createElement('span');span.className='legend-item';const dot=document.createElement('span');dot.className='swatch';dot.style.background='#ffd45e';span.append(dot,document.createTextNode('照片点'+(meta.photos?.hike_date?' · '+meta.photos.hike_date:'')));box.append(span)}
  }
  function surfaceZ(x,y){
@@ -90,7 +97,8 @@ export async function initFeatureControls({THREE,geo,mesh,scene,meta,onChange=()
   const next=geo.toNonIndexed(),rgb=new Float32Array(indices.length*3),counts={};
   for(let i=0;i<indices.length/3;i++){
    const id=i<spec.top_faces?(faceRoute[i]&&!(state.houses&&faceGap?.[i])?4:preClass[samples[i]]):0;
-   const color=colors[id];counts[id]=(counts[id]||0)+1;
+   let color=colors[id];counts[id]=(counts[id]||0)+1;
+   if(state.settlements&&settlementCells&&i<spec.top_faces&&id!==1&&id!==4&&id!==6){const code=settlementCells[samples[i]];if(code){color=settlementColors[code]||color}}
    for(let j=0;j<3;j++){const k=i*9+j*3;rgb[k]=color.r;rgb[k+1]=color.g;rgb[k+2]=color.b}
   }
   next.setAttribute('color',new THREE.BufferAttribute(rgb,3));next.computeBoundingBox();next.computeBoundingSphere();
@@ -99,13 +107,19 @@ export async function initFeatureControls({THREE,geo,mesh,scene,meta,onChange=()
   roadGroup.visible=!!state.roads;
   for(const road of roadGroup.children){const attr=road.geometry.attributes.position;for(let i=0;i<attr.count;i++)attr.setZ(i,surfaceZ(attr.getX(i),attr.getY(i))+(meta.roads.lift_mm||.07));attr.needsUpdate=true;road.geometry.computeBoundingSphere()}
   pinGroup.visible=state.houses;scaleGroup.visible=state.elevation_scale;
+  placeLabels?.setVisible(state.places);placeLabels?.invalidate();
   legend();window.featureStatus={enabled:{...state},available:{...spec.available},face_counts:counts,preview_only:true};onChange();
  }
+ // Load labels before building the toggles so a failed fetch renders as an off, disabled button.
+ const failed={};
+ if(state.places&&renderer)try{placeLabels=await initPlaceLabels({THREE,meta,scene,renderer,surfaceAt:surfaceZ,mesh})}catch(error){console.error(error);state.places=false;failed.places=true}
  for(const [key,name] of Object.entries(names)){
-  const button=document.createElement('button');button.textContent=spec.available[key]?name:`${name}（未构建）`;button.dataset.feature=key;button.disabled=!spec.available[key];button.setAttribute('aria-pressed',String(state[key]));button.classList.toggle('active',state[key]);
+  const usable=spec.available[key]&&!failed[key];
+  const button=document.createElement('button');button.textContent=usable?name:`${name}（${failed[key]?'加载失败':'未构建'}）`;button.dataset.feature=key;button.disabled=!usable;button.setAttribute('aria-pressed',String(state[key]));button.classList.toggle('active',state[key]);
   button.addEventListener('click',()=>{state[key]=!state[key];button.setAttribute('aria-pressed',String(state[key]));button.classList.toggle('active',state[key]);refresh()});document.querySelector('#feature-switches').append(button);
  }
  window.addEventListener('photo-layer-visibility',e=>{state.photos=e.detail;legend();if(window.featureStatus)window.featureStatus.enabled.photos=e.detail});
  refresh();
- return {updateRoadWidths,surfaceAt:surfaceZ};
+ function updateOverlays(camera,renderer){updateRoadWidths(camera,renderer);placeLabels?.update(camera)}
+ return {updateRoadWidths,updateOverlays,surfaceAt:surfaceZ};
 }

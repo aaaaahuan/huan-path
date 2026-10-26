@@ -464,10 +464,29 @@ Node 测试使用已安装的 `work/browser-test/node_modules/`。重新部署�
 
 ## 道路预览图层（2026-10-22）
 
-道路支持系统代理、多镜像与 OSM 主 API 回退，网络预算约 150 秒；失败记录原因并继续生成。`config/features.json` 的 `network.proxy` 优先于 HTTPS_PROXY / https_proxy / ALL_PROXY / all_proxy 与 macOS 系统代理；默认 null 自动选择，"off" 直连，回环直连。代理通过 curl `-K -` 的 stdin 配置传递，argv 与来源记录不含凭据。主 API 面积超限或 HTTP 400 切块，509 按普通失败处理。
+道路支持系统代理、多镜像与 OSM 主 API 回退，网络预算见下文「Overpass 超时」（当前 Overpass 240 秒 + 主 API 60 秒）；失败记录原因并继续生成。`config/features.json` 的 `network.proxy` 优先于 HTTPS_PROXY / https_proxy / ALL_PROXY / all_proxy 与 macOS 系统代理；默认 null 自动选择，"off" 直连，回环直连。代理通过 curl `-K -` 的 stdin 配置传递，argv 与来源记录不含凭据。主 API 面积超限或 HTTP 400 切块，509 按普通失败处理。
 
 新建作品可附加最大 50 MB 的 OSM JSON、XML 或 GeoJSON；已有作品可在预览中导入。文件优先使用作品 `data/roads_import.json`，不写共享在线缓存；缺节点的不完整 way 跳过，支持 UTF-8 BOM。附加道路导入失败会显示原因，作品仍启动生成。导入后复用流水线同步整套作品网页，不重建地形与打印文件。
 
 道路四级保持暖色、最小屏幕目标宽度及模型宽度上限。每个 mesh 按 units 统一缩放，units 变化超过 5% 才重写 XY，旋转时不重写；道路、图钉与照片采样复用地形三角插值。道路仅用于预览，STL/3MF 道路几何留待后续拆分。实现与本轮验证见技术方案 §15。
 
 本轮全部 25 项 Python 测试及六项 UI/浏览器/HTTP 检查通过。九月雨崩实网作品 `20261022-145941-34b4eefdfa` 经系统代理 127.0.0.1:7897，从 overpass-api.de 获取 122 条道路（非缓存）；20 条 curl argv 抽查均无代理串。HTTP 本地导入得到 121 条、cache 无新增且打印文件哈希不变；坏道路文件返回 400 后 retry 的作品 `20261022-145851-21aacdab8e` 完成。记录见 `work/roads-round3-*.json` 与 `work/roads-round3-ps.txt`。8765 未操作，8766 测试服务验证后关闭。
+
+## 地名标签、居民区图层与作品搜索（2026-10-26）
+
+### 地名与居民区（仅网页预览）
+
+- 流水线在 STL/3MF 导出**之后**经 Overpass 取 `place=city|town|village|hamlet|locality` 节点和 `landuse=residential|commercial|retail|industrial` 面，写入作品 `web/layers/places.json`（最多 400 个，按级别和人口排序）与 `web/layers/settlements.bin`（与 `classes.bin` 同网格的 uint8 分类）。metadata 中 `preview_layers.places / settlements` 是唯一的图层地址，`settlements` 记录计数、样式与 ODbL 来源。
+- 打印文件不含这两层；取数或构建失败只写入一条警告并得到空图层，绝不阻断打印文件、不虚构数据。
+- 预览中「地名」「居民区」两个开关即时切换。标签按级别贪心避让，并沿视线对预览高度场做光线步进，被山体挡住的标签隐藏（相机移动时最多每 120 ms 重算一次，停下后再补算一次）。
+- 已有作品补建或刷新：`.venv/bin/python -m app.settlements [--assets] <作品目录>...`。只改 `web/` 图层、metadata 与 `spec.json` 警告，不动 `models/` 打印文件；`--assets` 另外调用 `pipeline.package_preview` 同步当前网页代码。
+
+### Overpass 超时
+
+`app/datasets.py`：服务器端 `[timeout:90]`，单次客户端尝试 105 秒，全部镜像共享 240 秒总预算；道路与地名/居民区查询另留 60 秒给 OSM 主 API 回退。剩余预算不足 20 秒不再尝试。完整用满 105 秒仍无响应的镜像在本进程内排到最后；被预算截短的尝试不降级镜像。缓存键沿用旧的 `[timeout:25]` 查询文本，因此调整超时不会让已有缓存失效。
+
+已知限制：OSM 主 API 回退（`/api/0.6/map` 切块）只保留 way 与带标签节点，**丢弃 relation**（多边形关系形式的居民区/水面在回退时缺失）；回退的合并结果按该查询写入缓存，但 `/map` 块本身不缓存：同一范围的道路与地名/居民区查询各自回退时会重复下载相同的块。
+
+### 作品搜索
+
+工作台左侧作品栏去掉「新增作品」按钮，改为按名称（及原文件名）模糊搜索：忽略大小写、全半角与空白，前缀匹配排最前，其次子串，再次按顺序包含所有字符；输入法组字期间不过滤，Esc 或 × 清空，计数显示「匹配数/总数」。折叠侧栏时自动清空搜索；折叠状态下点放大镜展开侧栏。上传入口仍在工具栏「＋ 新建作品」、左上角品牌与默认上传页。

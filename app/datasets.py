@@ -95,13 +95,27 @@ def prepare_dem(job,info):
  record={'dataset':'Copernicus DEM GLO-30','license':'Copernicus DEM terms','attribution':'© DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH 2014–2018. Provided under COPERNICUS by the European Union and ESA; all rights reserved.','license_url':'https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM','tiles':records,'bounds_wgs84':info['bounds_wgs84']};write_json(data/'dem_source.json',record)
  return record
 
-def overpass(bounds,building=False,highway=False):
+SETTLEMENT_PLACES='city|town|village|hamlet|locality'
+SETTLEMENT_LANDUSE='residential|commercial|retail|industrial'
+# Overpass timing. Dense city areas (e.g. Hangzhou West Lake natural features, 2.3 MB) need ~50 s end to end,
+# so the old 38 s client cap failed every mirror. Server [timeout:] is the query's own ceiling; the client
+# waits that long plus transfer slack. A per-query budget caps the total instead of multiplying the long
+# attempt by every endpoint, and a mirror that timed out earlier in this process is tried last next time.
+OVERPASS_SERVER_TIMEOUT=90;OVERPASS_ATTEMPT=105;OVERPASS_BUDGET=240;OSM_API_RESERVE=60;OVERPASS_MIN_ATTEMPT=20
+_slow_endpoints=set()  # endpoints that used a full attempt without answering; tried last next time
+def endpoint_order(endpoints):
+ return sorted(endpoints,key=lambda e:e in _slow_endpoints)  # stable: configured order otherwise
+def overpass(bounds,building=False,highway=False,settlement=False):
  w,s,e,n=bounds;box=f'({s:.7f},{w:.7f},{n:.7f},{e:.7f})'
  tags=['way[waterway~"^(river|stream)$"]','nwr[natural=water]','nwr[landuse=forest]','nwr[natural~"^(wood|glacier)$"]']
  if building:tags=['nwr[building]']
  if highway:tags=['way["highway"]']
- query='[out:json][timeout:25];('+''.join(t+box+';' for t in tags)+');out body geom;'
- key=hashlib.sha256(query.encode()).hexdigest()[:24];cached=CACHE/('osm-'+key+'.json');errors=[]
+ if settlement:tags=[f'node[place~"^({SETTLEMENT_PLACES})$"]',f'way[landuse~"^({SETTLEMENT_LANDUSE})$"]',f'relation[landuse~"^({SETTLEMENT_LANDUSE})$"]']
+ wide=highway or settlement
+ body='('+''.join(t+box+';' for t in tags)+');out body geom;'
+ query=f'[out:json][timeout:{OVERPASS_SERVER_TIMEOUT}];'+body
+ # Cache identity is the data selection, not the server time limit; keep keys from the original [timeout:25] form.
+ key=hashlib.sha256(('[out:json][timeout:25];'+body).encode()).hexdigest()[:24];cached=CACHE/('osm-'+key+'.json');errors=[]
  if cached.exists():
   try:
    doc=json.loads(cached.read_text())
@@ -110,26 +124,33 @@ def overpass(bounds,building=False,highway=False):
    if source.get('source_type')=='local':raise ValueError('忽略旧版本写入的本地导入缓存')
    return doc,{**source,'cache_hit':True,'query':query,'coverage_bounds_wgs84':bounds}
   except (ValueError,OSError):cached.unlink(missing_ok=True)
- deadline=time.monotonic()+149
- endpoints=['https://overpass.kumi.systems/api/interpreter','https://overpass.private.coffee/api/interpreter','https://maps.mail.ru/osm/tools/overpass/api/interpreter','https://overpass-api.de/api/interpreter'] if highway else ['https://overpass.kumi.systems/api/interpreter','https://overpass.private.coffee/api/interpreter','https://overpass-api.de/api/interpreter']
- for endpoint_index,endpoint in enumerate(endpoints):
+ reserve=OSM_API_RESERVE if wide else 0  # wide queries keep time for the OSM API fallback
+ deadline=time.monotonic()+OVERPASS_BUDGET+reserve
+ endpoints=['https://overpass.kumi.systems/api/interpreter','https://overpass.private.coffee/api/interpreter','https://maps.mail.ru/osm/tools/overpass/api/interpreter','https://overpass-api.de/api/interpreter'] if wide else ['https://overpass.kumi.systems/api/interpreter','https://overpass.private.coffee/api/interpreter','https://overpass-api.de/api/interpreter']
+ for endpoint in endpoint_order(endpoints):
   try:
-   remaining=deadline-time.monotonic()
-   if remaining<=0:
-    errors.append({'endpoint':'budget','error':'道路总预算耗尽'});break
-   if remaining<=30 and highway:break
+   remaining=deadline-time.monotonic()-reserve
+   if remaining<OVERPASS_MIN_ATTEMPT:
+    errors.append({'endpoint':'budget','error':'Overpass 总预算耗尽'});break
+   attempt=min(OVERPASS_ATTEMPT,remaining);started=time.monotonic()
    with tempfile.TemporaryDirectory(dir=CACHE) as tmp:
     downloaded=Path(tmp)/'response.json'
-    fetch(endpoint,downloaded,{'data':query},timeout=min(45,(remaining-30)/(len(endpoints)-endpoint_index)) if highway else min(38,remaining));doc=json.loads(downloaded.read_text())
+    try:fetch(endpoint,downloaded,{'data':query},timeout=attempt)
+    except Exception:
+     # Only a full-length timeout marks an endpoint slow; a budget-truncated try says nothing about it.
+     if attempt==OVERPASS_ATTEMPT and time.monotonic()-started>=attempt-1:_slow_endpoints.add(endpoint)
+     raise
+    doc=json.loads(downloaded.read_text())
    if 'elements' not in doc or 'remark' in doc:raise ValueError('Overpass 返回不完整数据')
+   _slow_endpoints.discard(endpoint)
    source={'cache_hit':False,'source_type':'overpass','proxy':proxy_record(endpoint),'endpoint':endpoint,'query':query,'coverage_bounds_wgs84':bounds,'timestamp':doc.get('osm3s',{}),'previous_errors':errors}
    cache_json(cached,doc);cache_json(cached.with_suffix('.source.json'),source)
    return doc,source
   except Exception as ex:
    errors.append({'endpoint':endpoint,'error':str(ex)})
- if highway and time.monotonic()<deadline:
+ if wide and time.monotonic()<deadline:
   try:
-   doc=osm_map(bounds,deadline);cache_json(cached,doc)
+   doc=osm_map(bounds,deadline,settlement_element if settlement else None);cache_json(cached,doc)
    source={'cache_hit':False,'source_type':'osm_api','map_tiles':doc.get('map_tiles'),'endpoint':'https://api.openstreetmap.org/api/0.6/map.json','proxy':proxy_record('https://api.openstreetmap.org'),'query':query,'coverage_bounds_wgs84':bounds,'previous_errors':errors}
    cache_json(cached.with_suffix('.source.json'),source)
    return doc,source
@@ -173,9 +194,16 @@ def prepare_features(job,spec,progress):
  write_json(Path(job)/'spec.json',spec);progress.detail('数据已裁剪；'+ ('有获取限制，已记入警告' if warnings else '公开数据覆盖正常'))
 
 
-def osm_map(bounds,deadline):
- """Bounded recursive OSM map tiles, shared node table and way de-duplication."""
- nodes={};ways={};tiles=0
+def settlement_element(el):
+ tags=el.get('tags',{})
+ if el.get('type')=='node':return bool(re.fullmatch(SETTLEMENT_PLACES,tags.get('place','')))
+ return el.get('type')=='way' and bool(re.fullmatch(SETTLEMENT_LANDUSE,tags.get('landuse','')))
+
+def osm_map(bounds,deadline,keep=None):
+ """Bounded recursive OSM map tiles, shared node table and way de-duplication.
+ keep() selects output ways (default: highway) and tagged nodes (default: none)."""
+ keep=keep or (lambda el:el.get('type')=='way' and bool(el.get('tags',{}).get('highway')))
+ nodes={};ways={};tagged={};tiles=0
  def tile(b,depth=0):
   nonlocal tiles
   remaining=deadline-time.monotonic()
@@ -196,10 +224,12 @@ def osm_map(bounds,deadline):
     raise
   tiles+=1
   for el in doc.get('elements',[]):
-   if el['type']=='node':nodes[el['id']]={'lat':el['lat'],'lon':el['lon']}
-   elif el['type']=='way' and el.get('tags',{}).get('highway'):ways[el['id']]=el
+   if el['type']=='node':
+    nodes[el['id']]={'lat':el['lat'],'lon':el['lon']}
+    if el.get('tags') and keep(el):tagged[el['id']]={'type':'node','id':el['id'],'lat':el['lat'],'lon':el['lon'],'tags':el['tags']}
+   elif el['type']=='way' and keep(el):ways[el['id']]=el
  tile(list(bounds))
- elements=[]
+ elements=list(tagged.values())
  for el in ways.values():
   geometry=way_geometry(el,nodes)
   if geometry:elements.append({'type':'way','id':el['id'],'tags':el['tags'],'geometry':geometry})

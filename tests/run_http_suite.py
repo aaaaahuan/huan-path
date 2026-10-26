@@ -56,7 +56,7 @@ def main():
                 raise TimeoutError('测试服务未就绪')
             commands = [
                 [sys.executable, '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'test_*.py'],
-                ['node', 'tests/job-ui.mjs'], ['node', 'tests/upload-ui.mjs'], ['node', 'tests/roads-ui.mjs'],
+                ['node', 'tests/job-ui.mjs'], ['node', 'tests/upload-ui.mjs'], ['node', 'tests/search-ui.mjs'], ['node', 'tests/roads-ui.mjs'], ['node', 'tests/places-occlusion.mjs'],
                 [sys.executable, 'tests/http_checks.py', '--url', 'http://127.0.0.1:8766'],
                 ['node', 'tests/workbench-browser.cjs'], ['node', 'tests/roads-browser.cjs'],
             ]

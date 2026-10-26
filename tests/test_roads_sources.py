@@ -95,7 +95,7 @@ class SourcesTests(unittest.TestCase):
   self.assertEqual(len(doc['elements']),1)
   self.assertEqual(len(parse_roads(b'\xef\xbb\xbf <osm><way id="1"><nd lat="28" lon="98"/><nd lat="28.1" lon="98.1"/><tag k="highway" v="path"/></way></osm>')['elements']),1)
  def test_budget(self):
-  with tempfile.TemporaryDirectory() as tmp,patch.object(datasets,'CACHE',Path(tmp)),patch.object(datasets.time,'monotonic',side_effect=[0,151,151,151]),patch.object(datasets,'fetch') as fetch:
+  with tempfile.TemporaryDirectory() as tmp,patch.object(datasets,'CACHE',Path(tmp)),patch.object(datasets.time,'monotonic',side_effect=[0]+[datasets.OVERPASS_BUDGET+datasets.OSM_API_RESERVE+1]*5),patch.object(datasets,'fetch') as fetch:
    with self.assertRaises(RuntimeError):datasets.overpass([98,28,99,29],highway=True)
    fetch.assert_not_called()
  def test_import_priority_cache(self):

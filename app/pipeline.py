@@ -84,7 +84,7 @@ def run_job(job):
 
 def package_preview(job):
  spec=json.loads((job/'spec.json').read_text());web=job/'web'
- for name in ['index.html','features.js','photos.js','photos.css','pin-houses.js','product-info.js']:
+ for name in ['index.html','features.js','places.js','photos.js','photos.css','pin-houses.js','product-info.js']:
   shutil.copyfile(ROOT/'web'/name,web/name)
  if (web/'vendor').exists():shutil.rmtree(web/'vendor')
  shutil.copytree(ROOT/'web/vendor',web/'vendor')

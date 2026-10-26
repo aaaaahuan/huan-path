@@ -3,7 +3,7 @@ import {Window} from '../work/browser-test/node_modules/happy-dom/lib/index.js';
 import * as THREE from '../web/vendor/three.module.js';
 const encode=s=>'data:text/javascript;base64,'+Buffer.from(s).toString('base64');
 const pin=encode(fs.readFileSync('web/pin-houses.js','utf8'));
-const {initFeatureControls}=await import(encode(fs.readFileSync('web/features.js','utf8').replace("'./pin-houses.js'",JSON.stringify(pin))));
+const {initFeatureControls}=await import(encode(fs.readFileSync('web/features.js','utf8').replace("'./pin-houses.js'",JSON.stringify(pin)).replace("'./places.js'",JSON.stringify(encode(fs.readFileSync('web/places.js','utf8'))))));
 const win=new Window();globalThis.window=win;globalThis.document=win.document;document.body.innerHTML='<div id="feature-switches"></div><div id="legend"></div>';
 const buffers={base:new Float32Array([1,2,3,4]),classes:new Uint8Array([2,2,2,2]),distance:new Float32Array([10,10,10,10]),forest:new Float32Array([1,1,1,1]),face:new Uint8Array([0,0])};
 const groups={};for(const key of ['major','secondary','local','trail']){const rank=['major','secondary','local','trail'].indexOf(key);groups[key]={vertices:key,color:'#e9c18f',label:key,width_mm:[.55,.4,.28,.16][rank],min_px:[3.5,2.5,2,1.5][rank],max_mm:[2.8,2,1.6,1.2][rank]};buffers[key]=new Float32Array([.2,.3,0,.8,.3,0,.8,.5,0,.2,.3,0,.8,.5,0,.2,.5,0])}

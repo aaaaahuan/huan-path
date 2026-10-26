@@ -434,6 +434,20 @@ report['roads']=road_report
 report['preview_layers']=layer_spec
 report['sources']={key:json.loads((DATA/name).read_text()) for key,name in [('osm','osm_source.json'),('worldcover','worldcover_source.json'),('roads','osm_roads_source.json')]}
 report['palette']=palette
+# Place labels and settlement areas are preview-only overlays, built after STL/3MF export;
+# any failure degrades to an empty layer plus a warning and never blocks the print files.
+from app.settlements import prepare_settlements,build_settlements,empty_report,apply_report as apply_settlements,WARNING as SETTLEMENT_WARNING
+try:
+ settlement_report=build_settlements(prepare_settlements(DATA,road_bounds,road_warnings),tf,lo,hi,scale,OUT/'web',(nx,ny))
+ settlement_source=json.loads((DATA/'osm_settlements_source.json').read_text())
+except Exception as ex:
+ road_warnings.append(SETTLEMENT_WARNING+'，本次无地名/居民区图层：'+str(ex)[:300])
+ settlement_report=empty_report(OUT/'web',(nx,ny));settlement_source={'available':False,'error':str(ex)}
+print('Settlements:',settlement_report['places']['counts'],settlement_report['areas']['cells'],flush=True)
+apply_settlements(report,settlement_report,settlement_source)
+if job_spec:
+ from app.state import write_json
+ write_json(args.job_spec,job_spec)
 # Preserve the independent photo overlay descriptor when rebuilding terrain metadata.
 photo_manifest=DATA/('photos/manifest.json' if job_spec else 'photos-2026-01-27/manifest.json')
 if photo_manifest.exists():

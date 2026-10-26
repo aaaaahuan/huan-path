@@ -33,3 +33,10 @@
 .huan-app .error, .huan-app .library-error, .huan-app .failed .stage-icon { color: #a94636; }
 .huan-app .notice { background: #fff8ee; border-color: #dbc5a2; color: #805727; }
 .huan-app button:focus-visible, .huan-app a:focus-visible, .huan-app summary:focus-visible, .huan-app label:focus-visible { outline-color: #315d40; }
+.huan-app .work-search { background: #fff; border-color: #d5e1d7; border-radius: 9px; color: #718176; }
+.huan-app .work-search:focus-within { border-color: #315d40; box-shadow: 0 0 0 3px #315d4014; }
+.huan-app .work-search.filtering { color: #315d40; }
+.huan-app .work-search input { color: #263c30; }
+.huan-app .work-search input::placeholder { color: #97a59a; }
+.huan-app #work-filter-clear { color: #718176; }
+.huan-app #work-filter-clear:hover { background: #e7efe7; color: #315d40; }

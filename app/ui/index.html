@@ -5,7 +5,7 @@
 <div class="workspace" id="workspace">
  <aside class="sidebar" id="sidebar" aria-label="作品导航">
   <a class="brand" href="/" aria-label="徒步记忆首页"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 24 13 8l5 8 3-5 8 13H4Z"/><path d="m10 14 3 3 3-3"/></svg></span><span class="brand-copy"><strong>徒步记忆</strong><small>TRAIL MEMORIES</small></span></a>
-  <button class="new-work sidebar-new" id="sidebar-new"><span class="plus">＋</span><span class="nav-label">新建作品</span><kbd class="nav-label">↑</kbd></button>
+  <div class="work-search" id="work-search" role="search" title="搜索作品"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><input id="work-filter" type="search" placeholder="搜索作品名称" aria-label="按名称搜索作品" aria-controls="history" autocomplete="off" spellcheck="false" enterkeyhint="search"><button type="button" id="work-filter-clear" aria-label="清除搜索" title="清除搜索" hidden>×</button></div>
   <div class="library-heading"><span class="nav-label">我的作品</span><span id="work-count" class="count">0</span></div>
   <nav id="history" class="work-list" aria-label="我的作品"></nav>
   <p id="library-error" class="library-error" role="status"></p>
